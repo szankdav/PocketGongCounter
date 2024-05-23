@@ -1,7 +1,9 @@
 import { Injectable, inject } from '@angular/core';
-import { ApiService } from '../../services/api.service';
-import { RecordModel } from 'pocketbase';
-import { AuthService } from '../../auth/auth.service';
+import { ApiService } from '../../core/services/api/api.service';
+import { Observable} from 'rxjs';
+import { Counter } from '../../models/counter.model';
+import { AuthService } from '../../core/services/auth/auth.service';
+import { HttpResponse } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -10,13 +12,14 @@ import { AuthService } from '../../auth/auth.service';
 export class CounterService {
   api = inject(ApiService)
   auth = inject(AuthService)
-  path = 'counters'
+  getPath = `counters/records?filter=user_id = "${this.auth.user()?.id}"`
+  updatePath = `counters/records/`
 
-  getCounters$(): Promise<RecordModel[]>{
-    return this.api.get(this.auth.authenticatedUserId)
+  getCounters$(): Observable<any>{
+    return this.api.getCounters<Counter[]>(this.getPath)
   }
 
-  updateCounter$(counterId: string, data: any): Promise<RecordModel>{
-    return this.api.update(counterId, data)
+  updateCounter$(id: string, data: Object): Observable<any>{
+    return this.api.updateCounter<HttpResponse<Text>>(`${this.updatePath}${id}`, data)
   }
 }

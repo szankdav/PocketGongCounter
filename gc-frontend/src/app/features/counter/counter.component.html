@@ -1,12 +1,12 @@
 <div id="counters" class="mt-5">
     @for (counter of counters(); track $index){
-        <div class="mt-3">
-            <p>Counter 1: {{ counter.value_1 }}</p>
-            <button class="btn btn-success mx-3" (click)="increaseCounter(counter.id, counter.value_1, 1, $event)">Increase</button>
-            <button class="btn btn-danger" (click)="decreaseCounter(counter.id, counter.value_1, 1, $event)">Decrease</button>
-            <p>Counter 2: {{ counter.value_2 }}</p>
-            <button class="btn btn-success mx-3" (click)="increaseCounter(counter.id, counter.value_2, 2, $event)">Increase</button>
-            <button class="btn btn-danger" (click)="decreaseCounter(counter.id, counter.value_2, 2, $event)">Decrease</button>
-        </div>
+    <div class="mt-3">
+        <p>Counter 1: {{ counter.value_1 }}</p>
+        <button class="btn btn-success mx-3" (click)="increaseCounter(counter.id, counter.value_1, 'value_1')">Increase</button>
+        <button class="btn btn-danger" (click)="decreaseCounter(counter.id, counter.value_1, 'value_1')">Decrease</button>
+        <p>Counter 2: {{ counter.value_2 }}</p>
+        <button class="btn btn-success mx-3" (click)="increaseCounter(counter.id, counter.value_2, 'value_2')">Increase</button>
+        <button class="btn btn-danger" (click)="decreaseCounter(counter.id, counter.value_2, 'value_2')">Decrease</button>
+    </div>
     }
 </div>

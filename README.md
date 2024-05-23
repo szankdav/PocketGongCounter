@@ -1,8 +1,8 @@
 # Go counter app demo
 
-## Install
+## Backend
 
-### Backend
+### Install
 
 1. Download and install Go
 
@@ -19,7 +19,13 @@ $ cd gc-backend
 $ go get
 ```
 
-### Frontend
+### Run in dev mode
+```bash
+$ go run main.go serve
+```
+
+## Frontend
+### Install
 
 1. Install Node.js (18.13.0+)
 
@@ -30,16 +36,8 @@ $ cd gc-frontend
 $ npm run install
 ```
 
-## Run in dev mode
+### Run in dev mode
 
-### Inside gc-backend folder
-```bash
-$ go run main.go serve
-```
-
-### Inside gc-frontend folder
 ```bash
 $ npm run start
 ```
-
-

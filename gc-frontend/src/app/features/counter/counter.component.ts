@@ -1,7 +1,6 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CounterService } from './counter.service';
 import { Counter } from '../../models/counter.model';
-import { RecordModel } from 'pocketbase';
 
 @Component({
   selector: 'app-counter',
@@ -13,75 +12,60 @@ import { RecordModel } from 'pocketbase';
 export class CounterComponent implements OnInit {
 
   ngOnInit(): void {
-    this.getCounters()
+    this.loadCounters()
   }
 
   counterService = inject(CounterService)
+
   counters = signal<Counter[]>([])
-
-  buildCounterObject(counterObject: RecordModel[]): Counter[] {
-    const createdCounters: Counter[] = []
-    counterObject.forEach((objectCounter) => {
-      const counter: Counter = {
-        id: objectCounter["id"],
-        value_1: objectCounter["value_1"],
-        value_2: objectCounter["value_2"],
-        user_id: objectCounter["user_id"]
+  
+  initCounters(counters: Counter[]): Counter[] {
+    let countersFromDatabase: Counter[] = []
+    counters.forEach((c) => {
+      const counter = {
+        id: c['id'],
+        value_1: c['value_1'],
+        value_2: c["value_2"],
+        user_id: c['user_id']
       }
-      createdCounters.push(counter)
+      countersFromDatabase.push(counter)
     })
-    return createdCounters
+    return countersFromDatabase
+  }
+  
+  loadCounters() {
+    try {
+      this.counterService.getCounters$().subscribe((res) => {
+        this.counters.set(this.initCounters(res['items']))
+      })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
-  buildBodyForValueChange(counterValue: number, valueNumber: number, e: Event): Object {
-    let data = {}
-    let increasedValue = 0
-    const button: HTMLElement = e.target as HTMLElement
-    if (button.innerText == "Increase") {
-      increasedValue = counterValue + 1
-    }
-    else if (button.innerText == "Decrease") {
-      increasedValue = counterValue - 1
-    }
-    if (valueNumber == 1) {
-      data = {
-        "value_1": increasedValue
+
+  increaseCounter(id: string, counterNumber: number, valueName: string) {
+    let increasedNumber: number = counterNumber + 1
+    this.changeCounter(increasedNumber, id, valueName)
+  }
+
+  decreaseCounter(id: string, counterNumber: number, valueName: string) {
+    let increasedNumber: number = counterNumber - 1
+    this.changeCounter(increasedNumber, id, valueName)
+  }
+
+  changeCounter(increasedNumber: number, id: string, valueName: string){
+    try {
+      let data = {
+        [valueName]: increasedNumber
       }
-    }
-    else if (valueNumber == 2) {
-      data = {
-        "value_2": increasedValue
-      }
-    }
-    return data
-  }
-
-  async getCounters() {
-    try {
-      const counterObject = await this.counterService.getCounters$()
-      this.counters.set(this.buildCounterObject(counterObject))
+      this.counterService.updateCounter$(id, data).subscribe((res) => {
+        if(res['status'] === undefined){
+          this.loadCounters()
+        }
+      })
     } catch (error) {
-      console.error("Error: " + error)
-    }
-  }
-
-  async increaseCounter(counterId: string, counterValue: number, valueNumber: number, e: Event) {
-    try {
-      const data = this.buildBodyForValueChange(counterValue, valueNumber, e)
-      await this.counterService.updateCounter$(counterId, data)
-      this.getCounters()
-    } catch (error) {
-      console.error("Error" + error)
-    }
-  }
-
-  async decreaseCounter(counterId: string, counterValue: number, valueNumber: number, e: Event) {
-    try {
-      const data = this.buildBodyForValueChange(counterValue, valueNumber, e)
-      await this.counterService.updateCounter$(counterId, data)
-      this.getCounters()
-    } catch (error) {
-      console.error("Error: " + error)
+      console.error(error)
     }
   }
 }

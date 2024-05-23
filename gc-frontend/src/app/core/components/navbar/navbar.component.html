@@ -1,8 +1,26 @@
-<nav class="navbar bg-dark" data-bs-theme="dark">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="#">
-        <img src="../../../../assets/golang.png" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
-        Go Counter App!
-      </a>
+<nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">
+      <img src="../../../../assets/golang.png" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
+      Go Counter App!
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          @if(userEmail() !== null){
+          <a class="nav-link">Loggen in as: {{ userEmail() }}</a>
+          }
+        </li>
+        <li class="nav-item">
+          @if(isLoggedIn()){
+          <a class="nav-link" href="#" (click)="logout()">Logout</a>
+          }
+        </li>
+      </ul>
     </div>
-  </nav>
+  </div>
+</nav>

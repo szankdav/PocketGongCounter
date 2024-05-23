@@ -1,11 +1,11 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './login/login.component';
+import { LoginComponent } from './features/login/login.component';
 import { CounterComponent } from './features/counter/counter.component';
-import { AuthGuard } from './auth/auth.guard';
+import { AuthGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
-    { path: "", component: LoginComponent },
-    { path: "counters", component: CounterComponent, canActivate: [AuthGuard] },
-    { path: '', redirectTo: '', pathMatch: 'full' },
+    { path: "home", component: CounterComponent, canActivate: [AuthGuard] },
+    { path: "login", component: LoginComponent },
+    { path: '', redirectTo: 'home', pathMatch: 'full' },
     //{ path: '**', component: PageNotFoundComponent },
 ];
