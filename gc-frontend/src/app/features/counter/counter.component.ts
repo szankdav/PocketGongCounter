@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { CounterService } from './counter.service';
 import { Counter } from '../../models/counter.model';
 
@@ -7,65 +7,56 @@ import { Counter } from '../../models/counter.model';
   standalone: true,
   imports: [],
   templateUrl: './counter.component.html',
-  styleUrl: './counter.component.css'
+  styleUrl: './counter.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CounterComponent implements OnInit {
+  counterService = inject(CounterService)
+  counters = signal<Counter[]>([])
+
+  loadCounters() {
+    this.counterService.getCounters$().subscribe((res) => {
+      this.counters.set(res)
+    })
+  }
+
+  // loadCounter(counter: Counter){
+  //   let counters: Counter[] = this.counters()
+  //   let indexOfCouterToUpdate: number = counters.findIndex(x => x.id == counter.id)
+  //   counters[indexOfCouterToUpdate] = counter
+  //   this.counters.set(counters)
+  //   // Method 2
+  //   const counters: Counter[] = this.counters();
+  //   let counter = counters.findIndex(x => x.id == id);
+  //   this.counterService.getCounter$(id).subscribe((res) => {
+  //     counters[counter] = res;
+  //     this.counters.set(counters)
+  //   })
+  // }
 
   ngOnInit(): void {
-    this.loadCounters()
+    this.loadCounters();
   }
 
-  counterService = inject(CounterService)
-
-  counters = signal<Counter[]>([])
-  
-  initCounters(counters: Counter[]): Counter[] {
-    let countersFromDatabase: Counter[] = []
-    counters.forEach((c) => {
-      const counter = {
-        id: c['id'],
-        value_1: c['value_1'],
-        value_2: c["value_2"],
-        user_id: c['user_id']
+  updateCounter(id: string, event: Event) {
+    const button = (event.target as HTMLButtonElement)
+    this.counterService.getCounter$(id).subscribe((res) => {
+      let data = {}
+      if(button.textContent == "Increase"){
+        data = {
+          counter_value: res.counter_value + 1
+        }
       }
-      countersFromDatabase.push(counter)
-    })
-    return countersFromDatabase
-  }
-  
-  loadCounters() {
-    try {
-      this.counterService.getCounters$().subscribe((res) => {
-        this.counters.set(this.initCounters(res['items']))
-      })
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
-
-  increaseCounter(id: string, counterNumber: number, valueName: string) {
-    let increasedNumber: number = counterNumber + 1
-    this.changeCounter(increasedNumber, id, valueName)
-  }
-
-  decreaseCounter(id: string, counterNumber: number, valueName: string) {
-    let increasedNumber: number = counterNumber - 1
-    this.changeCounter(increasedNumber, id, valueName)
-  }
-
-  changeCounter(increasedNumber: number, id: string, valueName: string){
-    try {
-      let data = {
-        [valueName]: increasedNumber
+      else if (button.textContent == "Decrease"){
+        data = {
+          counter_value: res.counter_value - 1
+        }
       }
       this.counterService.updateCounter$(id, data).subscribe((res) => {
-        if(res['status'] === undefined){
+        if (res != null) {
           this.loadCounters()
         }
       })
-    } catch (error) {
-      console.error(error)
-    }
+    })
   }
 }

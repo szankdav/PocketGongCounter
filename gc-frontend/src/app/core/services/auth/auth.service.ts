@@ -8,9 +8,6 @@ import { ClientResponseError } from 'pocketbase';
   providedIn: 'root'
 })
 export class AuthService {
-
-  // TODO: session storage!!!! ??????
-
   apiService = inject(ApiService)
   pb = this.apiService.pb
   router = inject(Router)

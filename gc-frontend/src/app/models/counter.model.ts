@@ -1,6 +1,5 @@
 export interface Counter {
     id: string,
-    value_1: number,
-    value_2: number,
+    counter_value: number,
     user_id: string
 }
