@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
-import { CounterService } from './counter.service';
+import { ChangeDetectionStrategy, Component, OnInit, Signal, computed, inject } from '@angular/core';
+import { CounterService } from '../../core/services/counter/counter.service';
 import { Counter } from '../../models/counter.model';
 
 @Component({
@@ -12,33 +12,31 @@ import { Counter } from '../../models/counter.model';
 })
 export class CounterComponent implements OnInit {
   counterService = inject(CounterService)
-  counters = signal<Counter[]>([])
-
-  loadCounters() {
-    this.counterService.getCounters$().subscribe((res) => {
-      this.counters.set(res)
-    })
-  }
+  counters: Signal<Counter[]> = computed(() => this.counterService.counters())
 
   ngOnInit(): void {
-    this.loadCounters();
+    this.loadCounters()
+  }
+  
+  loadCounters(){
+    this.counterService.getCounters$().subscribe()
   }
 
-  increaseCounter(counter: Counter){
+  increaseCounter(counter: Counter) {
     counter.counter_value += 1;
     this.updateCounter(counter);
   }
 
-  decreaseCounter(counter: Counter){
+  decreaseCounter(counter: Counter) {
     counter.counter_value -= 1;
     this.updateCounter(counter);
   }
 
   updateCounter(counter: Counter) {
-      this.counterService.updateCounter$(counter).subscribe((res) => {
-        if (res != null) {
-          this.loadCounters()
-        }
-      })
+    this.counterService.updateCounter$(counter).subscribe((res) => {
+      if(res != null){
+        this.loadCounters()
+      }
+    })
   }
 }

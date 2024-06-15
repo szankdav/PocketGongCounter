@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component, Signal, computed, inject } from '@angular/core';
 import { AuthService } from '../../services/auth/auth.service';
+import { CounterService } from '../../services/counter/counter.service';
+import { Counter } from '../../../models/counter.model';
 
 @Component({
   selector: 'app-navbar',
@@ -11,6 +13,10 @@ import { AuthService } from '../../services/auth/auth.service';
 })
 export class NavbarComponent {
   auth = inject(AuthService)
+  counterService = inject(CounterService)
+
+  counters: Signal<Counter[]> = computed(() => this.counterService.counters())
+  counterValuesSum: Signal<number> = computed(() => this.counters().reduce((sum, counter) => sum + counter.counter_value, 0))
 
   isLoggedIn: Signal<boolean> = computed(() => {
     return this.auth.user() !== null;

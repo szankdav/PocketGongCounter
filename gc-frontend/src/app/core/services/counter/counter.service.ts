@@ -1,9 +1,9 @@
-import { Injectable, inject } from '@angular/core';
-import { ApiService } from '../../core/services/api/api.service';
+import { Injectable, WritableSignal, inject, signal } from '@angular/core';
+import { ApiService } from '../api/api.service';
 import { Observable, catchError, filter, map, of } from 'rxjs';
-import { Counter } from '../../models/counter.model';
-import { AuthService } from '../../core/services/auth/auth.service';
-import { CounterResponse } from '../../models/counterResponse.model';
+import { Counter } from '../../../models/counter.model';
+import { AuthService } from '../auth/auth.service';
+import { CounterResponse } from '../../../models/counterResponse.model';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +14,7 @@ export class CounterService {
   auth = inject(AuthService)
   getPath = `counters/records?filter=user_id="${this.auth.user()?.id}"`
   updateAndSingleCounterPath = `counters/records/`
+  counters: WritableSignal<Counter[]> = signal<Counter[]>([])
 
   // getCounter$(id: string): Observable<Counter> {
   //   return this.api.get<Counter>(`${this.updateAndSingleCounterPath}${id}`).pipe(
@@ -27,7 +28,7 @@ export class CounterService {
   //   )
   // }
 
-  getCounters$(): Observable<Counter[]> {
+  getCounters$(): Observable<void> {
     return this.api.get<CounterResponse>(this.getPath).pipe(
       filter((value) => value.items.length > 0),
       map((value) => {
@@ -39,11 +40,11 @@ export class CounterService {
             user_id: element.user_id
           })
         });
-        return counters;
+        return this.counters.set(counters);
       }),
       catchError((error) => {
         console.error(`Error getting counter(s): ${error}`)
-        return of([])
+        return of(this.counters.set([]))
       })
     )
   }

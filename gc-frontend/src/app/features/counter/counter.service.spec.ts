@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { CounterService } from './counter.service';
+import { CounterService } from '../../core/services/counter/counter.service';
 
 describe('CounterService', () => {
   let service: CounterService;
