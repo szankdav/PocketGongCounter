@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import PocketBase from 'pocketbase';
+import { Counter } from '../../../models/counter.model';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,7 @@ export class ApiService {
     return this.http.get<T>(`${this.baseUrl}/${route}`);
   }
 
-  update<T>(route: string, data: Object) {
+  update<T>(route: string, data: Counter) {
     return this.http.patch<T>(`${this.baseUrl}/${route}`, data);
   }
 }

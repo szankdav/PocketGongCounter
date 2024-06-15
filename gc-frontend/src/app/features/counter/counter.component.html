@@ -3,8 +3,8 @@
     <div class="mt-3">
         <h5>Counter {{ $index + 1 }}:</h5>
         <p>{{ counter.counter_value }}</p>
-        <button class="btn btn-success mx-3" (click)="updateCounter(counter.id, $event)">Increase</button>
-        <button class="btn btn-danger" (click)="updateCounter(counter.id, $event)">Decrease</button>
+        <button class="btn btn-success mx-3" (click)="increaseCounter(counter)">Increase</button>
+        <button class="btn btn-danger" (click)="decreaseCounter(counter)">Decrease</button>
     </div>
     }
 </div>

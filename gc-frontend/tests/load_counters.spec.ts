@@ -1,15 +1,10 @@
 import { test, expect } from '@playwright/test';
+import { loginPageObject } from './po/loginPageObject';
 
 test('mock an increase click on Counter 1', async ({ page }) => {
-  await page.goto('http://localhost:4200/');
-  await page.goto('http://localhost:4200/login');
-  await page.getByLabel('Email address').click();
-  await page.getByLabel('Email address').fill('szankovszky.david@gmail.com');
-  await page.getByLabel('Password').click();
-  await page.getByLabel('Password').fill('b123456');
-  await page.getByLabel('Password').press('CapsLock');
-  await page.getByLabel('Password').fill('b123456B');
-  await page.getByRole('button', { name: 'Login' }).click();
+  const po = new loginPageObject(page);
+  po.goTo(page);
+  po.login('szankovszky.david@gmail.com', 'b123456B');
   await expect(page).toHaveTitle("Home");
   await page.route('http://localhost:8090/api/collections/counters/records?filter=user_id=%2206oobnogdj9cg61%22', async route => {
     const json = {

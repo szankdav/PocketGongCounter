@@ -15,17 +15,17 @@ export class CounterService {
   getPath = `counters/records?filter=user_id="${this.auth.user()?.id}"`
   updateAndSingleCounterPath = `counters/records/`
 
-  getCounter$(id: string): Observable<Counter> {
-    return this.api.get<Counter>(`${this.updateAndSingleCounterPath}${id}`).pipe(
-      map((value) => {
-        return value;
-      }),
-      catchError((error) => {
-        console.error(`Error getting counter(s): ${error}`)
-        return of()
-      })
-    )
-  }
+  // getCounter$(id: string): Observable<Counter> {
+  //   return this.api.get<Counter>(`${this.updateAndSingleCounterPath}${id}`).pipe(
+  //     map((value) => {
+  //       return value;
+  //     }),
+  //     catchError((error) => {
+  //       console.error(`Error getting counter(s): ${error}`)
+  //       return of()
+  //     })
+  //   )
+  // }
 
   getCounters$(): Observable<Counter[]> {
     return this.api.get<CounterResponse>(this.getPath).pipe(
@@ -48,7 +48,7 @@ export class CounterService {
     )
   }
 
-  updateCounter$(id: string, data: Object): Observable<Counter> {
-    return this.api.update<Counter>(`${this.updateAndSingleCounterPath}${id}`, data)
+  updateCounter$(counter: Counter): Observable<Counter> {
+    return this.api.update<Counter>(`${this.updateAndSingleCounterPath}${counter.id}`, counter)
   }
 }
