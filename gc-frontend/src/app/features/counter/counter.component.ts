@@ -14,7 +14,7 @@ import { AuthService } from '../../core/services/auth/auth.service';
   styleUrl: './counter.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CounterComponent implements OnInit {
+export class CounterComponent {
   authService = inject(AuthService)
   counterService = inject(CounterService)
   counters: Signal<Counter[]> = computed(() => this.counterService.counters())
@@ -27,10 +27,6 @@ export class CounterComponent implements OnInit {
   counterName: string = '';
   counterValue: number = 0;
   change: boolean = false;
-
-  ngOnInit(): void {
-    this.counterService.loadCounters()
-  }
 
   updateCounter(counter: Counter) {
     this.counterService.updateCounter$(counter).subscribe((res) => {
