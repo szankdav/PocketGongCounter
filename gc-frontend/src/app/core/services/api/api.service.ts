@@ -18,4 +18,12 @@ export class ApiService {
   update<T>(route: string, data: Counter) {
     return this.http.patch<T>(`${this.baseUrl}/${route}`, data);
   }
+
+  create<T>(route: string, data: Counter) {
+    return this.http.post<T>(`${this.baseUrl}/${route}`, data);
+  }
+
+  delete<T>(route: string, id: string){
+   return this.http.delete<T>(`${this.baseUrl}/${route}${id}`) 
+  }
 }

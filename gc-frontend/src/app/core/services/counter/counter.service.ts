@@ -4,6 +4,7 @@ import { Observable, catchError, filter, map, of } from 'rxjs';
 import { Counter } from '../../../models/counter.model';
 import { AuthService } from '../auth/auth.service';
 import { CounterResponse } from '../../../models/counterResponse.model';
+import { HttpResponse, HttpStatusCode } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ export class CounterService {
   api = inject(ApiService)
   auth = inject(AuthService)
   getPath = `counters/records?filter=user_id="${this.auth.user()?.id}"`
-  updateAndSingleCounterPath = `counters/records/`
+  updateCreateDeleteCounterPath = `counters/records/`
   counters: WritableSignal<Counter[]> = signal<Counter[]>([])
 
   // getCounter$(id: string): Observable<Counter> {
@@ -28,6 +29,10 @@ export class CounterService {
   //   )
   // }
 
+  createCounter$(counter: Counter): Observable<Counter>{
+    return this.api.create<Counter>(this.updateCreateDeleteCounterPath, counter)
+  }
+
   getCounters$(): Observable<void> {
     return this.api.get<CounterResponse>(this.getPath).pipe(
       filter((value) => value.items.length > 0),
@@ -37,7 +42,8 @@ export class CounterService {
           counters.push({
             id: element.id,
             counter_value: element.counter_value,
-            user_id: element.user_id
+            user_id: element.user_id,
+            counter_name: element.counter_name
           })
         });
         return this.counters.set(counters);
@@ -50,6 +56,10 @@ export class CounterService {
   }
 
   updateCounter$(counter: Counter): Observable<Counter> {
-    return this.api.update<Counter>(`${this.updateAndSingleCounterPath}${counter.id}`, counter)
+    return this.api.update<Counter>(`${this.updateCreateDeleteCounterPath}${counter.id}`, counter)
+  }
+
+  deleteCounter$(id: string): Observable<HttpResponse<HttpStatusCode>>{
+    return this.api.delete<HttpResponse<HttpStatusCode>>(`${this.updateCreateDeleteCounterPath}`, id)
   }
 }
