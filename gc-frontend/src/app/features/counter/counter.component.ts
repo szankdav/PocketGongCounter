@@ -29,17 +29,13 @@ export class CounterComponent implements OnInit {
   change: boolean = false;
 
   ngOnInit(): void {
-    this.loadCounters()
-  }
-
-  loadCounters() {
-    this.counterService.getCounters$().subscribe()
+    this.counterService.loadCounters()
   }
 
   updateCounter(counter: Counter) {
     this.counterService.updateCounter$(counter).subscribe((res) => {
       if (res != null) {
-        this.loadCounters()
+        this.counterService.loadCounters()
       }
     })
   }
@@ -48,7 +44,7 @@ export class CounterComponent implements OnInit {
     this.counterService.deleteCounter$(counter.id).subscribe((res) => {
       if (res == null) {
         console.log(res)
-        this.loadCounters()
+        this.counterService.loadCounters()
       }
     })
   }
@@ -68,7 +64,7 @@ export class CounterComponent implements OnInit {
     this.counter.counter_value = this.counterValue
     this.counterService.updateCounter$(this.counter).subscribe((res) => {
       if (res != null) {
-        this.loadCounters()
+        this.counterService.loadCounters()
       }
     })
     this.change = false
@@ -81,7 +77,7 @@ export class CounterComponent implements OnInit {
     this.counter.counter_value = this.counterValue
     this.counterService.createCounter$(this.counter).subscribe((res) => {
       if (res != null) {
-        this.loadCounters()
+        this.counterService.loadCounters()
       }
     })
   }

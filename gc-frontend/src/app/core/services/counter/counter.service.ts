@@ -29,6 +29,14 @@ export class CounterService {
   //   )
   // }
 
+  constructor() {
+    this.loadCounters()
+  }
+
+  loadCounters() {
+    this.getCounters$().subscribe()
+  }
+
   createCounter$(counter: Counter): Observable<Counter>{
     return this.api.create<Counter>(this.updateCreateDeleteCounterPath, counter)
   }
