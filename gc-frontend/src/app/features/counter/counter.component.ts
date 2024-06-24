@@ -1,14 +1,15 @@
-import { ChangeDetectionStrategy, Component, OnInit, Signal, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, Signal, WritableSignal, computed, inject, signal } from '@angular/core';
 import { CounterService } from '../../core/services/counter/counter.service';
 import { Counter } from '../../models/counter.model';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../core/services/auth/auth.service';
+import { CounterModalComponent } from '../counter-modal/counter-modal.component';
 
 @Component({
   selector: 'app-counter',
   standalone: true,
   imports: [
-    FormsModule
+    CounterModalComponent
   ],
   templateUrl: './counter.component.html',
   styleUrl: './counter.component.css',
@@ -18,15 +19,12 @@ export class CounterComponent {
   authService = inject(AuthService)
   counterService = inject(CounterService)
   counters: Signal<Counter[]> = computed(() => this.counterService.counters())
-  counter: Counter = {
+  modalCounter = signal<Counter>({
     id: '',
     counter_value: 0,
     user_id: this.authService.user()!.id,
     counter_name: ''
-  };
-  counterName: string = '';
-  counterValue: number = 0;
-  change: boolean = false;
+  })
 
   updateCounter(counter: Counter) {
     this.counterService.updateCounter$(counter).subscribe((res) => {
@@ -55,40 +53,7 @@ export class CounterComponent {
     this.updateCounter(counter);
   }
 
-  changeCounter(){
-    this.counter.counter_name = this.counterName
-    this.counter.counter_value = this.counterValue
-    this.counterService.updateCounter$(this.counter).subscribe((res) => {
-      if (res != null) {
-        this.counterService.loadCounters()
-      }
-    })
-    this.change = false
-    this.counterName = ''
-    this.counterValue = 0
-  }
-
-  createCounter() {
-    this.counter.counter_name = this.counterName
-    this.counter.counter_value = this.counterValue
-    this.counterService.createCounter$(this.counter).subscribe((res) => {
-      if (res != null) {
-        this.counterService.loadCounters()
-      }
-    })
-  }
-
   loadCounterToModal(counter: Counter) {
-    this.change = true;
-    this.counter = counter
-    this.counterName = this.counter.counter_name
-    this.counterValue = this.counter.counter_value
-  }
-
-  resetModalAndCounterId(){
-    this.change = false
-    this.counterName = ''
-    this.counterValue = 0
-    this.counter.id = ''
+    this.modalCounter.set(counter)
   }
 }

@@ -1,0 +1,29 @@
+<div>
+    <button type="button" (click)="resetModalAndCounterId()" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#newCounter">Add
+        Counter!</button>
+</div>
+
+<div class="modal fade" id="newCounter" tabindex="-1" aria-labelledby="newCounterLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="newCounterLabel">New counter</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <label class="form-label" for="counterName">Name:</label>
+                <input [(ngModel)]="counterName" class="form-control" type="text" name="counterName" id="counterName">
+                <label class="form-label" for="counterValue">Value:</label>
+                <input [(ngModel)]="counterValue" class="form-control" type="number" step="1" id="counterValue">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                @if(!change){
+                    <button type="button" (click)="createCounter()" class="btn btn-primary" data-bs-dismiss="modal">Add</button>
+                } @else {
+                    <button type="button" (click)="changeCounter()" class="btn btn-primary" data-bs-dismiss="modal">Change</button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
