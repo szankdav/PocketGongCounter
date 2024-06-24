@@ -5,9 +5,9 @@ import { of } from 'rxjs';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 
-fdescribe('ApiService with jasmine mock', () => {
+describe('ApiService with jasmine mock', () => {
   let service: ApiService;
-  let httpSpy: jasmine.SpyObj<HttpClient> ;
+  let httpSpy: jasmine.SpyObj<HttpClient>;
 
   beforeEach(() => {
     httpSpy = jasmine.createSpyObj('HttpClient', ['get'])

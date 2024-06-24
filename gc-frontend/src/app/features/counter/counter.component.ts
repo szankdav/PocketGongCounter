@@ -1,8 +1,6 @@
-import { ChangeDetectionStrategy, Component, OnInit, Signal, WritableSignal, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Signal, computed, inject, signal } from '@angular/core';
 import { CounterService } from '../../core/services/counter/counter.service';
 import { Counter } from '../../models/counter.model';
-import { FormsModule } from '@angular/forms';
-import { AuthService } from '../../core/services/auth/auth.service';
 import { CounterModalComponent } from '../counter-modal/counter-modal.component';
 
 @Component({
@@ -16,13 +14,12 @@ import { CounterModalComponent } from '../counter-modal/counter-modal.component'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CounterComponent {
-  authService = inject(AuthService)
   counterService = inject(CounterService)
   counters: Signal<Counter[]> = computed(() => this.counterService.counters())
   modalCounter = signal<Counter>({
     id: '',
     counter_value: 0,
-    user_id: this.authService.user()!.id,
+    user_id: '',
     counter_name: ''
   })
 

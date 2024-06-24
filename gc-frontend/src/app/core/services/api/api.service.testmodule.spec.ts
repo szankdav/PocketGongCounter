@@ -5,7 +5,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { CounterResponse } from '../../../models/counterResponse.model';
 
 
-fdescribe('ApiService with test module', () => {
+describe('ApiService with test module', () => {
   let service: ApiService;
   let httpCtrl: HttpTestingController;
 
