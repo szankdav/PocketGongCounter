@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import PocketBase from 'pocketbase';
 import { Counter } from '../../../models/counter.model';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ export class ApiService {
   baseUrl = 'http://localhost:8090/api/collections'
   http = inject(HttpClient)
 
-  get<T>(route: string) {
+  get<T>(route: string) : Observable<T> {
     return this.http.get<T>(`${this.baseUrl}/${route}`);
   }
 
