@@ -7,6 +7,14 @@ img{
 }
 
 img:hover{
-    width: 5%;
-    transition: .5s ease;
+    animation: rotation 2s infinite linear;
 }
+
+@keyframes rotation {
+    from {
+      transform: rotateY(0deg);
+    }
+    to {
+      transform: rotateY(359deg);
+    }
+  }
