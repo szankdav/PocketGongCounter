@@ -58,4 +58,6 @@ describe('CounterComponent', () => {
     expect(updateSpy).toHaveBeenCalled();
     done();
   })
+
+  //TODO delete, update, load tests
 });

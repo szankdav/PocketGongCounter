@@ -21,4 +21,6 @@ describe('CounterModuleComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  // TODO tests
 });
