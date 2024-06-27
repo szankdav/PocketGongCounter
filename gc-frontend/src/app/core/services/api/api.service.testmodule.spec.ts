@@ -47,19 +47,19 @@ describe('ApiService with test module', () => {
   });
 
   it('should call http client with the given route when the get method has been called', () => {
-    service.get<string>('/valami').subscribe({
-      next: (res) => {
-        expect(res).toBeTruthy();
-      }
-    })
+    service.get<string>('getMock').subscribe()
+    const mockHttp = httpCtrl.expectOne(`${service.baseUrl}/getMock`);
+    const httpRequest = mockHttp.request;
+    expect(httpRequest.url).toEqual(`${service.baseUrl}/getMock`)
   });
 
-  it('should return COUNTER_RESPONSE from http get call', done => {
+  it('should return COUNTER_RESPONSE from http get call', () => {
     service.get<CounterResponse>('counters').subscribe({
       next: (res) => {
         expect(res).toBeTruthy();
         expect(res.items.length).toBeGreaterThan(1);
-        done();
+        expect(res.items.length).toBeLessThan(3);
+        
       }
     })
     const mockHttp = httpCtrl.expectOne(`${service.baseUrl}/counters`);
@@ -68,5 +68,26 @@ describe('ApiService with test module', () => {
     expect(httpRequest.method).toEqual("GET")
 
     mockHttp.flush(COUNTER_RESPONSE)
+  })
+
+  it('should call http client with the given route when the update method has benn called', () => {
+    service.update<string>('updateMock', COUNTER_RESPONSE.items[0]).subscribe();
+    const mockHttp = httpCtrl.expectOne(`${service.baseUrl}/updateMock`);
+    const httpRequest = mockHttp.request;
+    expect(httpRequest.url).toEqual(`${service.baseUrl}/updateMock`)
+  })
+
+  it('should call http client with the given route when the create method has benn called', () => {
+    service.create<string>('createMock', COUNTER_RESPONSE.items[0]).subscribe();
+    const mockHttp = httpCtrl.expectOne(`${service.baseUrl}/createMock`);
+    const httpRequest = mockHttp.request;
+    expect(httpRequest.url).toEqual(`${service.baseUrl}/createMock`)
+  })
+
+  it('should call http client with the given route when the delete method has benn called', () => {
+    service.delete<string>('deleteMock', COUNTER_RESPONSE.items[0].id).subscribe();
+    const mockHttp = httpCtrl.expectOne(`${service.baseUrl}/deleteMock${COUNTER_RESPONSE.items[0].id}`);
+    const httpRequest = mockHttp.request;
+    expect(httpRequest.url).toEqual(`${service.baseUrl}/deleteMock${COUNTER_RESPONSE.items[0].id}`)
   })
 });

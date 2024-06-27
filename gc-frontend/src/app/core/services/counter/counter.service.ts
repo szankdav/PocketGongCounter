@@ -30,18 +30,20 @@ export class CounterService {
   // }
 
   constructor() {
-    this.loadCounters()
+    this.setCounters()
   }
 
-  loadCounters() {
-    this.getCounters$().subscribe()
+  setCounters() {
+    this.getCounters$().subscribe((res) => {
+      this.counters.set(res)
+    })
   }
 
   createCounter$(counter: Counter): Observable<Counter>{
     return this.api.create<Counter>(this.updateCreateDeleteCounterPath, counter)
   }
 
-  getCounters$(): Observable<void> {
+  getCounters$(): Observable<Counter[]> {
     return this.api.get<CounterResponse>(this.getPath).pipe(
       filter((value) => value.items.length > 0),
       map((value) => {
@@ -54,11 +56,11 @@ export class CounterService {
             counter_name: element.counter_name
           })
         });
-        return this.counters.set(counters);
+        return counters;
       }),
       catchError((error) => {
         console.error(`Error getting counter(s): ${error}`)
-        return of(this.counters.set([]))
+        return of([])
       })
     )
   }
@@ -67,7 +69,7 @@ export class CounterService {
     return this.api.update<Counter>(`${this.updateCreateDeleteCounterPath}${counter.id}`, counter)
   }
 
-  deleteCounter$(id: string): Observable<HttpResponse<HttpStatusCode>>{
-    return this.api.delete<HttpResponse<HttpStatusCode>>(`${this.updateCreateDeleteCounterPath}`, id)
+  deleteCounter$(id: string): Observable<HttpResponse<Response>>{
+    return this.api.delete<HttpResponse<Response>>(`${this.updateCreateDeleteCounterPath}`, id)
   }
 }

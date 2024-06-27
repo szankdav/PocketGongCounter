@@ -14,7 +14,7 @@ import { CounterService } from '../../core/services/counter/counter.service';
   styleUrl: './counter-modal.component.css'
 })
 export class CounterModalComponent implements OnChanges {
-  authService = inject(AuthService)
+
   counterService = inject(CounterService)
 
   @Input() loadedCounter!: Counter;
@@ -34,7 +34,7 @@ export class CounterModalComponent implements OnChanges {
     this.loadedCounter.counter_value = this.counterValue
     this.counterService.updateCounter$(this.loadedCounter).subscribe((res) => {
       if (res != null) {
-        this.counterService.loadCounters()
+        this.counterService.setCounters()
       }
     })
     this.counterName = ''
@@ -46,7 +46,7 @@ export class CounterModalComponent implements OnChanges {
     this.loadedCounter.counter_value = this.counterValue
     this.counterService.createCounter$(this.loadedCounter).subscribe((res) => {
       if (res != null) {
-        this.counterService.loadCounters()
+        this.counterService.setCounters()
       }
     })
   }

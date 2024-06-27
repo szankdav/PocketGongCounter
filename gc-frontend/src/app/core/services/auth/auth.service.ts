@@ -11,7 +11,10 @@ export class AuthService {
   apiService = inject(ApiService)
   pb = this.apiService.pb
   router = inject(Router)
-  user: WritableSignal<null | User> = signal(null)
+  user: WritableSignal<User> = signal({
+    id: '',
+    email: ''
+  })
 
   constructor() {
     this.initUser()
