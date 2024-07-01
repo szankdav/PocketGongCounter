@@ -59,12 +59,12 @@ describe('CounterService', () => {
         expect(res[1].counter_name).toBe("Mock2")
       }
     })
-    const mockHttp = httpCtrl.match(`${apiService.baseUrl}/${service.getPath}`);
-    const httpRequest = mockHttp[1].request;
+    const mockHttp = httpCtrl.expectOne(`${apiService.baseUrl}/${service.countersForUserPath}`);
+    const httpRequest = mockHttp.request;
 
     expect(httpRequest.method).toEqual("GET")
 
-    mockHttp[1].flush(COUNTER_RESPONSE)
+    mockHttp.flush(COUNTER_RESPONSE)
   })
 
   it('should return with Counter when createCounter$ is called', () => {
@@ -110,8 +110,8 @@ describe('CounterService', () => {
   })
 
   it('should set Counters[] signal with the returned counters', () => {
-    const mockHttp = httpCtrl.expectOne(`${apiService.baseUrl}/${service.getPath}`);
     service.setCounters();
+    const mockHttp = httpCtrl.expectOne(`${apiService.baseUrl}/${service.countersForUserPath}`);
     mockHttp.flush(COUNTER_RESPONSE)
     expect(service.counters()[0].counter_name).toBe("Mock1")
   })

@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { loginPageObject } from './po/loginPageObject';
 import { countersPageObject } from './po/countersPageObject';
 
-test('mock an increase click on counters', async ({ page }) => {
+test('mock a decrease click on counters', async ({ page }) => {
     const loginPo = new loginPageObject(page);
     const counterPo = new  countersPageObject(page);
     loginPo.goTo(page);
@@ -35,7 +35,7 @@ test('mock an increase click on counters', async ({ page }) => {
         route.fulfill({ json });
     });
     await expect(page).toHaveTitle("Home");
-    await counterPo.increaseCounterByClick(page);
-    await expect(page.getByTitle('Mock1')).toHaveText("2")
-    await expect(page.getByTitle('Mock2')).toHaveText("51")
+    await counterPo.decreaseCounterByClick(page);
+    await expect(page.getByTitle('Mock1')).toHaveText("0")
+    await expect(page.getByTitle('Mock2')).toHaveText("49")
 });

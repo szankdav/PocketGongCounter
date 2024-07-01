@@ -3,6 +3,7 @@ import { ApiService } from '../api/api.service';
 import { Router } from '@angular/router';
 import { User } from '../../../models/user.model';
 import { ClientResponseError } from 'pocketbase';
+import { CounterService } from '../counter/counter.service';
 
 @Injectable({
   providedIn: 'root'

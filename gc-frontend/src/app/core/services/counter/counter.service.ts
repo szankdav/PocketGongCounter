@@ -4,7 +4,7 @@ import { Observable, catchError, filter, map, of } from 'rxjs';
 import { Counter } from '../../../models/counter.model';
 import { AuthService } from '../auth/auth.service';
 import { CounterResponse } from '../../../models/counterResponse.model';
-import { HttpResponse, HttpStatusCode } from '@angular/common/http';
+import { HttpResponse } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -13,24 +13,12 @@ import { HttpResponse, HttpStatusCode } from '@angular/common/http';
 export class CounterService {
   api = inject(ApiService)
   auth = inject(AuthService)
-  getPath = `counters/records?filter=user_id="${this.auth.user()?.id}"`
+  countersPath = "counters/records?filter=user_id="
   updateCreateDeleteCounterPath = `counters/records/`
   counters: WritableSignal<Counter[]> = signal<Counter[]>([])
 
-  // getCounter$(id: string): Observable<Counter> {
-  //   return this.api.get<Counter>(`${this.updateAndSingleCounterPath}${id}`).pipe(
-  //     map((value) => {
-  //       return value;
-  //     }),
-  //     catchError((error) => {
-  //       console.error(`Error getting counter(s): ${error}`)
-  //       return of()
-  //     })
-  //   )
-  // }
-
-  constructor() {
-    this.setCounters()
+  get countersForUserPath() {
+    return `${this.countersPath}"${this.auth.user().id}"`
   }
 
   setCounters() {
@@ -44,7 +32,7 @@ export class CounterService {
   }
 
   getCounters$(): Observable<Counter[]> {
-    return this.api.get<CounterResponse>(this.getPath).pipe(
+    return this.api.get<CounterResponse>(this.countersForUserPath).pipe(
       filter((value) => value.items.length > 0),
       map((value) => {
         const counters: Counter[] = [];

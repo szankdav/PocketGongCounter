@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, Signal, WritableSignal, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, Signal, WritableSignal, computed, inject, signal } from '@angular/core';
 import { CounterService } from '../../core/services/counter/counter.service';
 import { Counter } from '../../models/counter.model';
-import { CounterModalComponent } from '../counter-modal/counter-modal.component';
 import { AuthService } from '../../core/services/auth/auth.service';
+import { CounterModalComponent } from './counter-modal/counter-modal.component';
 
 @Component({
   selector: 'app-counter',
@@ -14,7 +14,7 @@ import { AuthService } from '../../core/services/auth/auth.service';
   styleUrl: './counter.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CounterComponent {
+export class CounterComponent implements OnInit {
   authService = inject(AuthService)
   counterService = inject(CounterService)
   counters: Signal<Counter[]> = computed(() => this.counterService.counters())
@@ -24,6 +24,10 @@ export class CounterComponent {
     user_id: this.authService.user().id,
     counter_name: ''
   })
+
+  ngOnInit(): void {
+    this.counterService.setCounters()
+  }
 
   updateCounter(counter: Counter) {
     this.counterService.updateCounter$(counter).subscribe((res) => {

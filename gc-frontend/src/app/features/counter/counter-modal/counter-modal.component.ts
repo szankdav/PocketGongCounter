@@ -1,8 +1,8 @@
 import { Component, Input, OnChanges, Signal, SimpleChanges, WritableSignal, inject, signal } from '@angular/core';
-import { AuthService } from '../../core/services/auth/auth.service';
-import { Counter } from '../../models/counter.model';
 import { FormsModule } from '@angular/forms';
-import { CounterService } from '../../core/services/counter/counter.service';
+import { CounterService } from '../../../core/services/counter/counter.service';
+import { Counter } from '../../../models/counter.model';
+
 
 @Component({
   selector: 'app-counter-modal',

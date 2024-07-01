@@ -19,4 +19,6 @@ import { NavbarComponent } from './core/components/navbar/navbar.component';
 })
 export class AppComponent {
   title = 'gc-frontend';
+
+  // TODO ngOnInit initUser, setCounters
 }

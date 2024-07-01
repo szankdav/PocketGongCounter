@@ -5,7 +5,7 @@
             @for (counter of counters(); track $index){
             <div class="mt-5">
                 <h5>{{ counter.counter_name }}:</h5>
-                <p>{{ counter.counter_value }}</p>
+                <p title="{{ counter.counter_name }}">{{ counter.counter_value }}</p>
                 <button class="btn btn-success mx-3" (click)="increaseCounter(counter)">Increase</button>
                 <button class="btn btn-danger" (click)="decreaseCounter(counter)">Decrease</button>
                 <img (click)="loadCounterToModal(counter)" class="mx-3" src="../../../assets/spanner.png" alt="Modify counter" data-bs-toggle="modal" data-bs-target="#newCounter">
