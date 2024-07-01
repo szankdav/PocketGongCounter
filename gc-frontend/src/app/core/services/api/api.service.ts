@@ -3,13 +3,14 @@ import { Injectable, inject } from '@angular/core';
 import PocketBase from 'pocketbase';
 import { Counter } from '../../../models/counter.model';
 import { Observable } from 'rxjs';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
-  pb = new PocketBase('http://localhost:8090');
-  baseUrl = 'http://localhost:8090/api/collections'
+  pb = new PocketBase(environment.pocketbaseUrl);
+  baseUrl = environment.baseUrl
   http = inject(HttpClient)
 
   get<T>(route: string) : Observable<T> {

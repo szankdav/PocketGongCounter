@@ -5,6 +5,7 @@ import { Counter } from '../../../models/counter.model';
 import { AuthService } from '../auth/auth.service';
 import { CounterResponse } from '../../../models/counterResponse.model';
 import { HttpResponse } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +14,8 @@ import { HttpResponse } from '@angular/common/http';
 export class CounterService {
   api = inject(ApiService)
   auth = inject(AuthService)
-  countersPath = "counters/records?filter=user_id="
-  updateCreateDeleteCounterPath = `counters/records/`
+  countersPath = environment.countersUrlForValidUser
+  updateCreateDeleteCounterPath = environment.updateCreateDeleteCounterUrl
   counters: WritableSignal<Counter[]> = signal<Counter[]>([])
 
   get countersForUserPath() {
