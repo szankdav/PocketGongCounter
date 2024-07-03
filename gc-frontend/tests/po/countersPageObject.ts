@@ -2,30 +2,38 @@ import { Locator, Page } from '@playwright/test';
 
 export class countersPageObject {
     countersPage: Page;
-    increaseCounter: Locator;
-    decreaseCounter: Locator;
-    modifyCounter: Locator;
-    deleteCounter: Locator;
+    increaseCounterButton: Locator;
+    decreaseCounterButton: Locator;
+    modifyCounterButton: Locator;
+    deleteCounterButton: Locator;
 
     constructor(page: Page) {
         this.countersPage = page;
-        this.increaseCounter = this.countersPage.getByRole('button', { name: 'Increase' })
-        this.decreaseCounter = this.countersPage.getByRole('button', { name: 'Decrease' })
-        this.modifyCounter = this.countersPage.getByAltText('Modify counter')
-        this.deleteCounter = this.countersPage.getByAltText('Delete counter')
+        this.increaseCounterButton = this.countersPage.getByRole('button', { name: 'Increase' })
+        this.decreaseCounterButton = this.countersPage.getByRole('button', { name: 'Decrease' })
+        this.modifyCounterButton = this.countersPage.getByAltText('Modify counter')
+        this.deleteCounterButton = this.countersPage.getByAltText('Delete counter')
     }
 
-    async increaseCounterByClick(page: Page) {
-        const buttons = await this.increaseCounter.count();
+    async increaseCounter(page: Page) {
+        const buttons = await this.increaseCounterButton.count();
         for (let i = 0; i < buttons; i++) {
-            await this.increaseCounter.nth(i).click();
+            await this.increaseCounterButton.nth(i).click();
         }
     }
 
-    async decreaseCounterByClick(page: Page) {
-        const buttons = await this.decreaseCounter.count();
+    async decreaseCounter(page: Page) {
+        const buttons = await this.decreaseCounterButton.count();
         for (let i = 0; i < buttons; i++) {
-            await this.decreaseCounter.nth(i).click();
+            await this.decreaseCounterButton.nth(i).click();
         }
+    }
+
+    async deleteCounter(page: Page, i: number){
+        await this.deleteCounterButton.nth(i).click();
+    }
+
+    async modifyCounter(page: Page, i: number){
+        await this.modifyCounterButton.nth(i).click();
     }
 }

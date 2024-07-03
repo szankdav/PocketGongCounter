@@ -35,7 +35,7 @@ test('mock a decrease click on counters', async ({ page }) => {
         route.fulfill({ json });
     });
     await expect(page).toHaveTitle("Home");
-    await counterPo.decreaseCounterByClick(page);
+    await counterPo.decreaseCounter(page);
     await expect(page.getByTitle('Mock1')).toHaveText("0")
     await expect(page.getByTitle('Mock2')).toHaveText("49")
 });

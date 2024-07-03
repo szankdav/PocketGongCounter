@@ -22,7 +22,7 @@ export class AuthService {
 
   async login(email: string, password: string) {
     try {
-      await this.pb.collection('users').authWithPassword(email, password);
+      await this.pb.collection('users').authWithPassword(email, password)
       this.initUser();
       this.router.navigateByUrl('/home');
     } catch (error) {
