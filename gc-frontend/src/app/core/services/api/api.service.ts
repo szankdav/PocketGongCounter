@@ -1,15 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import PocketBase from 'pocketbase';
 import { Counter } from '../../../models/counter.model';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
+import { IApiService } from './api.service.interface';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ApiService {
-  pb = new PocketBase(environment.pocketbaseUrl);
+export class ApiService implements IApiService {
   baseUrl = environment.baseUrl
   http = inject(HttpClient)
 
@@ -26,6 +25,6 @@ export class ApiService {
   }
 
   delete<T>(route: string, id: string){
-   return this.http.delete<T>(`${this.baseUrl}/${route}${id}`) 
+   return this.http.delete<T>(`${this.baseUrl}/${route}${id}`)
   }
 }

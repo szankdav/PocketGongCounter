@@ -1,54 +1,61 @@
 import { TestBed } from '@angular/core/testing';
 import { AuthService } from './auth.service';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { ApiService } from '../api/api.service';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { environment } from '../../../../environments/environment.development';
+import PocketBase, {
+  BaseAuthStore,
+  RecordModel,
+  RecordService,
+} from 'pocketbase';
+import { BaasService } from '../baas/baas.service';
+import { IBaasService } from '../baas/baas.service.interface';
+import { Router } from '@angular/router';
+
 environment;
+
+let mockBaasService: jasmine.SpyObj<IBaasService>;
+let mockRouter: jasmine.SpyObj<Router>;
 
 fdescribe('AuthService', () => {
   let service: AuthService;
-  let apiService: ApiService;
-  let httpCtrl: HttpTestingController;
-  let baseUrl: string;
 
   beforeEach(() => {
+    mockBaasService = jasmine.createSpyObj<IBaasService>('BaasService', [
+      'authWithPassword',
+      'getAuthUser',
+      'isAuthValid',
+      'logoutUser'
+    ]);
+
+    mockRouter = jasmine.createSpyObj<Router>('Router', ['navigateByUrl'])
+
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule]
+      imports: [HttpClientTestingModule],
+      providers: [
+        {
+          provide: BaasService,
+          useValue: mockBaasService,
+        },
+        {
+          provide: Router,
+          useValue: mockRouter,
+        }
+      ],
     });
     service = TestBed.inject(AuthService);
-    apiService = TestBed.inject(ApiService);
-    httpCtrl = TestBed.inject(HttpTestingController);
   });
-
-  const AUTHSTORE_RESPONSE = {
-    "baseToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiJ2aTJ5aDZ5aGFrZTFvcGgiLCJleHAiOjE3MjEwNTczMTQsImlkIjoiMDZvb2Jub2dkajljZzYxIiwidHlwZSI6ImF1dGhSZWNvcmQifQ.4XlS4jRImUxznp6VX4e2-cAt6_Dkc9p-XwEyEdHAADA",
-    "baseModel": {
-      "collectionId": "mockCollectionID",
-      "collectionName": "mockCollection",
-      "created": "2024-05-15 07:44:53.362Z",
-      "email": "mock@mock.mock",
-      "emailVisibility": false,
-      "id": "mockUserID",
-      "updated": "2024-05-15 07:44:53.362Z",
-      "username": "mockUser",
-      "verified": false
-    },
-    "_onChangeCallbacks": [],
-    "storageFallback": {},
-    "storageKey": "mock_auth"
-  }
 
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
   it('should call authWithPassword when login is called', async () => {
-    const mockHttp = httpCtrl.expectOne(`${environment.baseUrl}/users/auth-with-password`);
-    const httpRequest = mockHttp.request;
-    expect(httpRequest.method).toEqual("POST");
-    await service.login("mock@mock.mock", "mockIt")
-    mockHttp.flush(AUTHSTORE_RESPONSE)
-    expect(service.user().id).toBe("mockUserID")
-    expect(service.user().email).toBe("mock@mock.mock")
+    await service.login('mock@mock.mock', 'mockIt');
+    expect(mockBaasService.authWithPassword).toHaveBeenCalled();
+  });
+
+  it('should navigate to home after login', async () => {
+    await service.login('mock@mock.mock', 'mockIt');
+    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/home');
   })
 });
