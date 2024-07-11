@@ -57,6 +57,6 @@ export class CounterComponent implements OnInit {
   }
 
   loadCounterToModal(counter: Counter) {
-    this.modalCounter.set(counter)
+    this.modalCounter.set(counter);
   }
 }

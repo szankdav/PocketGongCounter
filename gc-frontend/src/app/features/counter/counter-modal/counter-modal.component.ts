@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, Signal, SimpleChanges, WritableSignal, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnChanges, Signal, SimpleChanges, WritableSignal, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CounterService } from '../../../core/services/counter/counter.service';
 import { Counter } from '../../../models/counter.model';
@@ -11,7 +11,8 @@ import { Counter } from '../../../models/counter.model';
     FormsModule
   ],
   templateUrl: './counter-modal.component.html',
-  styleUrl: './counter-modal.component.css'
+  styleUrl: './counter-modal.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CounterModalComponent implements OnChanges {
 
@@ -39,6 +40,7 @@ export class CounterModalComponent implements OnChanges {
     })
     this.counterName = ''
     this.counterValue = 0
+    this.resetModalAndCounterId()
   }
 
   createCounter() {
@@ -49,6 +51,7 @@ export class CounterModalComponent implements OnChanges {
         this.counterService.setCounters()
       }
     })
+    this.resetModalAndCounterId()
   }
 
   resetModalAndCounterId() {

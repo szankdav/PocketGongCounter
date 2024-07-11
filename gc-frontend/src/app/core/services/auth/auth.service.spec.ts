@@ -1,54 +1,83 @@
 import { TestBed } from '@angular/core/testing';
 import { AuthService } from './auth.service';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { ApiService } from '../api/api.service';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { environment } from '../../../../environments/environment.development';
+import { IBaasService } from '../baas/baas.service.interface';
+import { Router } from '@angular/router';
+import { BaasService } from '../baas/baas.service';
 environment;
 
-fdescribe('AuthService', () => {
+let mockBaasService: jasmine.SpyObj<IBaasService>;
+let mockRouter: jasmine.SpyObj<Router>;
+
+describe('AuthService', () => {
   let service: AuthService;
-  let apiService: ApiService;
-  let httpCtrl: HttpTestingController;
-  let baseUrl: string;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule]
-    });
-    service = TestBed.inject(AuthService);
-    apiService = TestBed.inject(ApiService);
-    httpCtrl = TestBed.inject(HttpTestingController);
-  });
+    mockBaasService = jasmine.createSpyObj<IBaasService>('BaasService', [
+      'authWithPassword',
+      'getAuthUser',
+      'isAuthValid',
+      'logoutUser'
+    ]);
 
-  const AUTHSTORE_RESPONSE = {
-    "baseToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiJ2aTJ5aDZ5aGFrZTFvcGgiLCJleHAiOjE3MjEwNTczMTQsImlkIjoiMDZvb2Jub2dkajljZzYxIiwidHlwZSI6ImF1dGhSZWNvcmQifQ.4XlS4jRImUxznp6VX4e2-cAt6_Dkc9p-XwEyEdHAADA",
-    "baseModel": {
-      "collectionId": "mockCollectionID",
-      "collectionName": "mockCollection",
-      "created": "2024-05-15 07:44:53.362Z",
-      "email": "mock@mock.mock",
-      "emailVisibility": false,
-      "id": "mockUserID",
-      "updated": "2024-05-15 07:44:53.362Z",
-      "username": "mockUser",
-      "verified": false
-    },
-    "_onChangeCallbacks": [],
-    "storageFallback": {},
-    "storageKey": "mock_auth"
-  }
+    mockRouter = jasmine.createSpyObj<Router>('Router', ['navigateByUrl'])
+
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [
+        {
+          provide: BaasService,
+          useValue: mockBaasService
+        },
+        {
+          provide: Router,
+          useValue: mockRouter,
+        }
+      ],
+    });
+
+    service = TestBed.inject(AuthService);
+  });
 
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
   it('should call authWithPassword when login is called', async () => {
-    const mockHttp = httpCtrl.expectOne(`${environment.baseUrl}/users/auth-with-password`);
-    const httpRequest = mockHttp.request;
-    expect(httpRequest.method).toEqual("POST");
-    await service.login("mock@mock.mock", "mockIt")
-    mockHttp.flush(AUTHSTORE_RESPONSE)
-    expect(service.user().id).toBe("mockUserID")
-    expect(service.user().email).toBe("mock@mock.mock")
+    await service.login('mock@mock.mock', 'mockIt');
+    expect(mockBaasService.authWithPassword).toHaveBeenCalled();
+  });
+
+  it('should navigate to home after login', async () => {
+    await service.login('mock@mock.mock', 'mockIt');
+    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/home');
+  })
+
+  it('should call isAuthValid when login is called', async () => {
+    await service.login('mock@mock.mock', 'mockIt');
+    expect(mockBaasService.isAuthValid).toHaveBeenCalled();
+  })
+
+  // it('should call getAuthUser when isAuthValid is called and returned true', async () => {
+  //   await service.login('mock@mock.mock', 'mockIt');
+  //   expect(mockBaasService.authWithPassword).toHaveBeenCalled();
+  //   expect(mockBaasService.isAuthValid).toHaveBeenCalled();
+  //   expect(service.user().email).toBe('mock@mock.mock');
+  // })
+
+  // Nem tudom letesztelni a getAuthUser-t, mert a mock nem jut el odáig, hogy valid felhasználó legyen az authStoreban.
+  // Itt megint magát a pocketbase-t kellene mockolni, de akkor felvetődik a kérdés, hogy jó-e így a kód?
+
+  // Try catch eljut-e a navigate-ig ha nem sikerül az initUser?
+
+  it('should call logoutUser when logout is called', () => {
+    service.logout();
+    expect(mockBaasService.logoutUser).toHaveBeenCalled();
+  })
+
+  it('should navigate to login page after logout is called', () => {
+    service.logout();
+    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/login')
   })
 });

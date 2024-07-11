@@ -1,9 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { ApiService } from './api.service';
-import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { CounterResponse } from '../../../models/counterResponse.model';
-
 
 describe('ApiService with test module', () => {
   let service: ApiService;

@@ -1,9 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { ApiService } from './api.service';
 import { HttpClient } from '@angular/common/http';
-import { of } from 'rxjs';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-
 
 describe('ApiService with jasmine mock', () => {
   let service: ApiService;
@@ -33,6 +30,6 @@ describe('ApiService with jasmine mock', () => {
 
   it('should call http client with proper base route', () => {
     service.get<string>('test')
-    expect(httpSpy.get.calls.first().args[0]).toBe('http://localhost:8090/api/collections/test')
+    expect(httpSpy.get.calls.first().args[0]).toBe('/test')
   })
 });

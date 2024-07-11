@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import PocketBase from 'pocketbase';
 import { Counter } from '../../../models/counter.model';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
@@ -9,7 +8,6 @@ import { environment } from '../../../../environments/environment';
   providedIn: 'root'
 })
 export class ApiService {
-  pb = new PocketBase(environment.pocketbaseUrl);
   baseUrl = environment.baseUrl
   http = inject(HttpClient)
 
