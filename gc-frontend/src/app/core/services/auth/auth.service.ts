@@ -1,7 +1,6 @@
 import { Injectable, WritableSignal, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { User } from '../../../models/user.model';
-import { ClientResponseError } from 'pocketbase';
 import { BaasService } from '../baas/baas.service';
 
 @Injectable({
@@ -19,20 +18,16 @@ export class AuthService {
     this.initUser()
   }
 
-  async login(email: string, password: string) {
+  async login(email: string, password: string): Promise<boolean | null> {
+    let res;
     try {
-      await this.baas.authWithPassword(email, password)
-      this.initUser();
-      this.router.navigateByUrl('/home');
+      res = await this.baas.authWithPassword(email, password)
     } catch (error) {
-      if (!(error instanceof ClientResponseError)) {
         console.error(error);
-        return;
-      }
-      if (error.status == 400) {
-        console.log(error.status, error.message);
-      }
+        return null;
     }
+    this.initUser();
+    return res;
   }
 
   initUser() {
