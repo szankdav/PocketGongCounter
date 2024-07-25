@@ -1,63 +1,93 @@
-import { ChangeDetectionStrategy, Component, Input, OnChanges, Signal, SimpleChanges, WritableSignal, inject, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, Input, OnChanges, OnInit, SimpleChanges, inject } from '@angular/core';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CounterService } from '../../../core/services/counter/counter.service';
 import { Counter } from '../../../models/counter.model';
+import { CommonModule } from '@angular/common';
 
 
 @Component({
   selector: 'app-counter-modal',
   standalone: true,
-  imports: [
-    FormsModule
-  ],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './counter-modal.component.html',
   styleUrl: './counter-modal.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CounterModalComponent implements OnChanges {
-
+export class CounterModalComponent implements OnChanges, OnInit {
   counterService = inject(CounterService)
 
   @Input() loadedCounter!: Counter;
+  change: boolean = false;
 
-  counterName: string = '';
-  counterValue: number = 0;
-  change: boolean = true;
+  modalForm = new FormGroup({ counterName: new FormControl(), counterValue: new FormControl() })
+
+  get counterNameControl(): FormControl<string> {
+    return this.modalForm.controls.counterName
+  }
+
+  get counterValueControl(): FormControl<number | null> {
+    return this.modalForm.controls.counterValue
+  }
+
+  onSubmit() {
+    const counterFromModal: Counter = {
+      id: this.change ? this.loadedCounter.id : '',
+      user_id: this.loadedCounter.user_id,
+      counter_name: this.counterNameControl.value,
+      counter_value: this.counterValueControl.value!
+    }
+    if (!this.change) {
+      this.counterService.createCounter$(counterFromModal).subscribe((res) => {
+        if (res != null) {
+          this.counterService.setCounters()
+        }
+      })
+      this.resetModal()
+    }
+    else {
+      this.counterService.updateCounter$(counterFromModal).subscribe((res) => {
+        if (res != null) {
+          this.counterService.setCounters()
+        }
+      })
+      this.resetModal()
+    }
+  }
+
+  ngOnInit(): void {
+    this.change = false;
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.counterName = this.loadedCounter.counter_name
-    this.counterValue = this.loadedCounter.counter_value
-    this.change = true
+    this.change = true;
+    console.log(this.change)
+    console.log(this.loadedCounter.id)
+    this.modalForm.setControl(
+      'counterName',
+      new FormControl(this.change == true ? this.loadedCounter.counter_name : '', {
+        nonNullable: true,
+        validators: [Validators.required]
+      })
+    )
+    this.modalForm.setControl(
+      'counterValue',
+      new FormControl(this.change == true ? this.loadedCounter.counter_value : 0)
+    )
   }
 
-  changeCounter() {
-    this.loadedCounter.counter_name = this.counterName
-    this.loadedCounter.counter_value = this.counterValue
-    this.counterService.updateCounter$(this.loadedCounter).subscribe((res) => {
-      if (res != null) {
-        this.counterService.setCounters()
-      }
-    })
-    this.counterName = ''
-    this.counterValue = 0
-    this.resetModalAndCounterId()
-  }
-
-  createCounter() {
-    this.loadedCounter.counter_name = this.counterName
-    this.loadedCounter.counter_value = this.counterValue
-    this.counterService.createCounter$(this.loadedCounter).subscribe((res) => {
-      if (res != null) {
-        this.counterService.setCounters()
-      }
-    })
-    this.resetModalAndCounterId()
-  }
-
-  resetModalAndCounterId() {
+  resetModal() {
     this.change = false
-    this.counterName = ''
-    this.counterValue = 0
-    this.loadedCounter.id = ''
+    this.modalForm.setControl(
+      'counterName',
+      new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required]
+      })
+    )
+    this.modalForm.setControl(
+      'counterValue',
+      new FormControl(0)
+    )
+    console.log(this.change)
   }
 }

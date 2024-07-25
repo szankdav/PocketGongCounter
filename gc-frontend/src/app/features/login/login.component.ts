@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -17,13 +17,9 @@ import { CommonModule } from '@angular/common';
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
   auth = inject(AuthService);
   router = inject(Router);
-  emailAddress = signal('');
-  password = signal('');
-
-  showLoginAltert = signal(false);
 
   loginForm = new FormGroup({
     email: new FormControl('', {
@@ -40,13 +36,13 @@ export class LoginComponent implements OnInit {
     return this.loginForm.controls.password;
   }
 
-  ngOnInit(): void {
-    this.loginForm.valueChanges.subscribe((value) => {
-      console.log('loginform value', value.);
-      console.log('loginform valid', this.loginForm.valid);
-      console.log('loginform errors', this.loginForm);
-    });
-  }
+  // ngOnInit(): void {
+  //   this.loginForm.valueChanges.subscribe((value) => {
+  //     console.log('loginform value', value);
+  //     console.log('loginform valid', this.loginForm.valid);
+  //     console.log('loginform errors', this.loginForm);
+  //   });
+  // }
 
   async onSubmit() {
     console.log('loginForm value', this.loginForm.value);
@@ -65,13 +61,5 @@ export class LoginComponent implements OnInit {
     } else {
       alert('Server error')
     }
-
-    //   if (isLoggedIn === true){
-    //     this.router.navigateByUrl('/home');
-    //   } else if (isLoggedIn === false) {
-    //     this.showLoginAltert.set(true)
-    //   } else {
-    //     console.error('Server error')
-    //   }
   }
 }

@@ -1,32 +1,31 @@
 <div class="container">
   <div class="row mt-5 d-flex justify-content-center">
     <div class="col-12 d-flex justify-content-center">
-
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="w-50">
         <div class="mb-3">
           <label for="emailAddress" class="form-label">Email address</label>
-          <input [ngStyle]="emailControl.dirty && emailControl.invalid ? {'border':'3px solid red'} : {}" [formControl]="emailControl" name="emailAddress" type="email" class="form-control" id="emailAddress">
+          <input [ngStyle]="emailControl.dirty && emailControl.invalid ? {'border':'3px solid red'} : {}"
+            [formControl]="emailControl" name="emailAddress" type="email" class="form-control" id="emailAddress">
           @if(emailControl.dirty && emailControl.hasError('required')){
-            <p style="color: red;">This field is required</p>
+          <p style="color: red;">This field is required</p>
           }
           @if(emailControl.dirty && !emailControl.hasError('required') && emailControl.hasError('email')){
-            <p style="color: red;">This field must be an email</p>
+          <p style="color: red;">This field must be an email</p>
           }
         </div>
         <div class="mb-3">
           <label for="password" class="form-label">Password</label>
-          <input [formControl]="loginForm.controls.password" name="password" type="password" class="form-control" id="password">
+          <input [formControl]="passwordControl" name="password" type="password" class="form-control"
+            id="password">
         </div>
         <button [disabled]="loginForm.invalid" type="submit" class="btn btn-primary">Login</button>
 
         @if(loginForm.hasError('invalidCredentials')){
-          <div id="loginAlert" class="alert alert-danger w-50 mt-3 text-center" role="alert">
-            Email address or password is incorrect!
-          </div>
+        <div id="loginAlert" class="alert alert-danger mt-3 text-center" role="alert">
+          Email address or password is incorrect!
+        </div>
         }
-
       </form>
-
     </div>
   </div>
 </div>
